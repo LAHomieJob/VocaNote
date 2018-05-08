@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="fabPressed">#ad1457</color>
+    <color name="fabRipple">#880e4f</color>
+    <color name="editSwipe">#4cd964</color>
+    <color name="deleteSwipe">#f71307</color>
+    <color name="black">#000000</color>
+    <color name="grey">#e7e5e5</color>
+    </resources>

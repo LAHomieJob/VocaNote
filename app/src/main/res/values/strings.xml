@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">VocaNote</string>
+    <string name="add_group">Add Group</string>
+    <string name="groups">Groups</string>
+    <string name="empty_group">Group is empty</string>
+    <string name="enter_new_name">Enter new name</string>
+    <string name="change_name_of_group">Change name of group</string>
+    <string name="nogroups">No Groups</string>
+    <string name="new_vocanote">new VocaNote</string>
+    <string name="new_group">new Group</string>
+    <string name="words">Words</string>
+    <string name="create_new_vocanote">Create new VocaNote</string>
+    <string name="new_word">New word:</string>
+    <string name="write_new_word">- write new word</string>
+    <string name="write_translation">- write translation</string>
+    <string name="translation">Translation:</string>
+    <string-array name="spinner_values">
+        <item>English</item>
+        <item>Spanish</item>
+        <item>Italian</item>
+        <item>French</item>
+        <item>German</item>
+    </string-array>
+    <string name="delete_group">Do you want to delete this group</string>
+    <string name="change">Change</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="field_is_empty">Field is empty</string>
+    <string name="search_hint">Your word</string>
+    <string name="vocanotes">Vocanotes</string>
+    <string name="delete_vocanote">Delete VocaNote</string>
+    <string name="delete_vocanote_alert_dialog">Delete this VocaNote?</string>
+    <string name="change_vocanote">Change VocaNote</string>
+    <string name="search">Search</string>
+    <string name="group_was_added">Group %1$s was added</string>
+    <string name="group_already_exists">Group %1$s already exists</string>
+    <string name="the_name_of_group">The name of group</string>
+</resources>
