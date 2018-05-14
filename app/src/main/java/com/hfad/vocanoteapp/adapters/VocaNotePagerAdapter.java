@@ -3,6 +3,7 @@ package com.hfad.vocanoteapp.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import com.hfad.vocanoteapp.ui.vocaNoteActivityController.VocaNoteContainerFragment;
 
@@ -17,6 +18,7 @@ public class VocaNotePagerAdapter extends FragmentStatePagerAdapter {
 
     public void setCountVocaNotes(int countVocaNotes) {
         this.countVocaNotes = countVocaNotes;
+        Log.d("ADAPTER_SIZE", String.valueOf(countVocaNotes));
         notifyDataSetChanged();
     }
 

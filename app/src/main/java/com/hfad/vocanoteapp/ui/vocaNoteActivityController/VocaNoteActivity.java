@@ -23,11 +23,11 @@ import com.hfad.vocanoteapp.viewModel.VocaNoteViewModel;
 import java.util.Objects;
 
 public class VocaNoteActivity extends AppCompatActivity implements
-        DeleteAlertDialog.DeleteAlertDialogListener, VocaNoteContainerFragment.VocaNoteFragmentListener,
-        ViewPager.OnPageChangeListener{
+        DeleteAlertDialog.DeleteAlertDialogListener, VocaNoteContainerFragment.VocaNoteFragmentListener {
 
     public static final String CURRENT_POSITION = "currentPosition";
     public static final String DELETE_VOCANOTE_DIALOG = "deleteVocaNoteDialog";
+    public static final String ID = "id";
     private String nameGroup;
     private String language;
     private int position;
@@ -45,18 +45,25 @@ public class VocaNoteActivity extends AppCompatActivity implements
         nameGroup = intent.getStringExtra(WordsActivity.NAME_GROUP);
         language = intent.getStringExtra(WordsActivity.LANGUAGE);
         position = intent.getIntExtra(WordsActivity.POSITION, 0);
-        if (savedInstanceState != null) {
-            position = savedInstanceState.getInt(CURRENT_POSITION);
-        }
         mVocaNoteViewModel = ViewModelProviders.of(this).get(VocaNoteViewModel.class);
         mVocaNoteViewModel.getByGroupVcVocaNote(nameGroup)
                 .observe(this, vocaNotes -> {
-                    vocaNoteId = vocaNotes.get(position).getId();
                     mAdapter.setCountVocaNotes(vocaNotes.size());
+                    mPager.setAdapter(mAdapter);
                     mPager.setCurrentItem(position, false);
+                    if (vocaNotes.isEmpty()) {
+                        finish();
+                    }
                 });
         initToolbar();
         initViewPager();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        position = savedInstanceState.getInt(CURRENT_POSITION);
+        vocaNoteId = savedInstanceState.getInt(ID);
     }
 
     private void initToolbar() {
@@ -69,15 +76,14 @@ public class VocaNoteActivity extends AppCompatActivity implements
     protected void initViewPager() {
         mAdapter = new VocaNotePagerAdapter(getSupportFragmentManager(), nameGroup);
         mPager = findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
         mPager.setPageMargin(Utilities.convertDip2Pixels(this, 16));
-        mPager.addOnPageChangeListener(this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CURRENT_POSITION, position);
+        outState.putInt(CURRENT_POSITION, mPager.getCurrentItem());
+        outState.putInt(ID, vocaNoteId);
     }
 
     @Override
@@ -108,6 +114,11 @@ public class VocaNoteActivity extends AppCompatActivity implements
     private void showDeleteDialog() {
         mDeleteAlertDialog = new DeleteAlertDialog().newInstance(getString(R.string.delete_vocanote_alert_dialog));
         mDeleteAlertDialog.show(getSupportFragmentManager(), DELETE_VOCANOTE_DIALOG);
+        mVocaNoteViewModel.getByGroupVcVocaNote(nameGroup)
+                .observe(mDeleteAlertDialog, vocaNotes -> {
+                    position = mPager.getCurrentItem();
+                    vocaNoteId = vocaNotes.get(position).getId();
+                });
     }
 
     @Override
@@ -118,20 +129,6 @@ public class VocaNoteActivity extends AppCompatActivity implements
     @Override
     public void onRightArrowIconClick() {
         mPager.arrowScroll(View.FOCUS_RIGHT);
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        this.position = position;
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
     }
 }
 

@@ -34,10 +34,9 @@ import com.hfad.vocanoteapp.ui.groupsActivityController.GroupsActivity;
 import com.hfad.vocanoteapp.ui.vocaNoteActivityController.VocaNoteActivity;
 import com.hfad.vocanoteapp.viewModel.VocaNoteViewModel;
 
-import java.util.HashMap;
 import java.util.Locale;
 
-public class WordsActivity extends AppCompatActivity{
+public class WordsActivity extends AppCompatActivity {
     public static final String TTS = "TTS";
     public static final int ADD_VOCANOTE = 1;
     private final int CHECK_CODE = 2;
@@ -66,7 +65,6 @@ public class WordsActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_words);
         initToolbar();
-        // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         nameGroup = intent.getStringExtra(GroupsActivity.EXTRA_GROUP);
         language = intent.getStringExtra(GroupsActivity.EXTRA_LANGUAGE);
@@ -75,12 +73,9 @@ public class WordsActivity extends AppCompatActivity{
             searchQuery = savedInstanceState.getString(SEARCH_QUERY);
             listState = savedInstanceState.getParcelable(KEY_FOR_LAYOUT_MANAGER_STATE);
         }
-        //RecyclerView containing the list of VocaNotes with sound icons
         mRecyclerView = initRecyclerView();
-        //FAB with two menu buttons listeners
         initFabMenuListeners();
         checkTTS();
-        //Using ViewModel to observe VocaNote data
         mVocaNoteViewModel = ViewModelProviders.of(this).get(VocaNoteViewModel.class);
         mVocaNoteViewModel.getByGroupVcVocaNote(nameGroup)
                 .observe(this, vocaNotes -> adapter.setVocaNotes(vocaNotes));
@@ -138,7 +133,8 @@ public class WordsActivity extends AppCompatActivity{
         });
     }
 
-    private void checkTTS(){
+    private void checkTTS() {
+        Log.d("Check_TTS", "I'm checking TTS");
         Intent check = new Intent();
         check.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(check, CHECK_CODE);
@@ -166,13 +162,18 @@ public class WordsActivity extends AppCompatActivity{
                 }
             });
         }
-        if(requestCode == CHECK_CODE){
-            if(resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS){
-                origSpeaker = new Speaker(this, chooseLang(language));
-            }else {
-                Intent install = new Intent();
-                install.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                startActivity(install);
+        if (requestCode == CHECK_CODE) {
+            if (origSpeaker == null) {
+                if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                    Log.d("INIT_TTS", "I'm initializing TTS");
+                    origSpeaker = new Speaker(getApplicationContext(), chooseLang(language));
+
+                } else {
+                    Intent install = new Intent();
+                    Log.d("INIT_TTS", "Alternative TTS");
+                    install.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                    startActivity(install);
+                }
             }
         }
     }
@@ -216,7 +217,7 @@ public class WordsActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(origSpeaker != null){
+        if (origSpeaker != null) {
             origSpeaker.destroy();
         }
     }

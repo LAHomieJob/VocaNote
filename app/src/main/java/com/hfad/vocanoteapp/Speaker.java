@@ -45,6 +45,9 @@ public class Speaker implements TextToSpeech.OnInitListener {
     }
 
     public void destroy(){
-        tts.shutdown();
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
     }
 }

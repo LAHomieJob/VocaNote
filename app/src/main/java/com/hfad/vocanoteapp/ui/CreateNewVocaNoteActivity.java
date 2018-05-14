@@ -49,7 +49,7 @@ public class CreateNewVocaNoteActivity extends AppCompatActivity implements View
     public void onClick(View v) {
         if (TextUtils.isEmpty(mEditTextOrigWord.getText()) ||
                 TextUtils.isEmpty(mEditTextTraslation.getText())) {
-            Toast.makeText(getApplicationContext(), getString(R.string.field_is_empty), Toast.LENGTH_SHORT)
+            Toast.makeText(this, getString(R.string.field_is_empty), Toast.LENGTH_SHORT)
                     .show();
         } else {
             origWord = mEditTextOrigWord.getText().toString();

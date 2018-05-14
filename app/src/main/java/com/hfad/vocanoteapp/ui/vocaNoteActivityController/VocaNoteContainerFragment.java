@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,7 @@ public class VocaNoteContainerFragment extends Fragment {
         private String nameGroup;
         private boolean flip;
         private VocaNoteViewModel innerVocaNoteViewModel;
+        private TextView wordView;
 
         public VocaNoteDetailFragment() {
 
@@ -112,7 +114,16 @@ public class VocaNoteContainerFragment extends Fragment {
         public View onCreateView(@NonNull android.view.LayoutInflater inflater, android.view.ViewGroup container,
                                  Bundle savedInstanceState) {
             View detailView = inflater.inflate(R.layout.fragment_voca_note, container, false);
-            TextView wordView = detailView.findViewById(R.id.word);
+            wordView = detailView.findViewById(R.id.word);
+            detailView.findViewById(R.id.rotateCard).setOnClickListener(v1 -> flipCard());
+            detailView.findViewById(R.id.skipLeft).setOnClickListener(v1 -> mListener.onLeftArrowIconClick());
+            detailView.findViewById(R.id.skipRight).setOnClickListener(v1 -> mListener.onRightArrowIconClick());
+            return detailView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
             innerVocaNoteViewModel.getByGroupVcVocaNote(nameGroup)
                     .observe(this, vocaNotes -> {
                         origWord = vocaNotes.get(position).getOriginWord();
@@ -123,10 +134,6 @@ public class VocaNoteContainerFragment extends Fragment {
                             wordView.setText(origWord);
                         }
                     });
-            detailView.findViewById(R.id.rotateCard).setOnClickListener(v1 -> flipCard());
-            detailView.findViewById(R.id.skipLeft).setOnClickListener(v1 -> mListener.onLeftArrowIconClick());
-            detailView.findViewById(R.id.skipRight).setOnClickListener(v1 -> mListener.onRightArrowIconClick());
-            return detailView;
         }
 
         private void flipCard() {
