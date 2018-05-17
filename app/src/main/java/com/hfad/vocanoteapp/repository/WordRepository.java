@@ -3,11 +3,15 @@ package com.hfad.vocanoteapp.repository;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+
 import com.hfad.vocanoteapp.database.AppDatabase;
+import com.hfad.vocanoteapp.database.GroupVc;
+import com.hfad.vocanoteapp.database.GroupVcDao;
 import com.hfad.vocanoteapp.database.VocaNote;
 import com.hfad.vocanoteapp.database.VocaNoteDao;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class WordRepository {
@@ -34,11 +38,28 @@ public class WordRepository {
         new insertAsyncTask(mVocaNoteDao).execute(vocaNote);
     }
 
+    public VocaNote getVocaNoteById(int id) {
+        try {
+            return new getVocaNoteByIdAsyncTask(mVocaNoteDao).execute(id).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void editVocaNote(int vocaNoteId, String origWord, String translation){
+        EditTaskParams params = new EditTaskParams(vocaNoteId, origWord, translation);
+        new editVocaNoteAsyncTask(mVocaNoteDao).execute(params);
+    }
+
     public void deleteByIdVocaNote(int id) {
         new deleteByIdVocaNoteAsyncTask(mVocaNoteDao).execute(id);
     }
 
-    private static class insertAsyncTask extends AsyncTask<VocaNote, Void, Void> {
+    private static class insertAsyncTask extends android.os.AsyncTask<VocaNote, Void, Void> {
 
         private VocaNoteDao mAsyncTaskDao;
 
@@ -49,6 +70,36 @@ public class WordRepository {
         @Override
         protected Void doInBackground(final VocaNote... params) {
             mAsyncTaskDao.insert(params[0]);
+            return null;
+        }
+    }
+
+    private static class EditTaskParams {
+        int vocaNoteId;
+        String origWord;
+        String translation;
+
+        EditTaskParams(int vocaNoteId, String origWord, String translation) {
+            this.vocaNoteId = vocaNoteId;
+            this.origWord = origWord;
+            this.translation = translation;
+        }
+    }
+
+    private static class editVocaNoteAsyncTask extends AsyncTask<EditTaskParams, Void, Void> {
+
+        private VocaNoteDao mAsyncTaskDao;
+
+        editVocaNoteAsyncTask(VocaNoteDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(EditTaskParams... params) {
+            int vocaNoteId = params[0].vocaNoteId;
+            String origWord = params[0].origWord;
+            String translation = params[0].translation;
+            mAsyncTaskDao.changeVocaNote(vocaNoteId, origWord, translation);
             return null;
         }
     }
@@ -65,6 +116,20 @@ public class WordRepository {
         protected Void doInBackground(Integer... params) {
             mAsyncTaskDao.deleteByIdVocaNote(params[0]);
             return null;
+        }
+    }
+
+    private static class getVocaNoteByIdAsyncTask extends AsyncTask<Integer, Void, VocaNote> {
+
+        private VocaNoteDao mAsyncTaskDao;
+
+        getVocaNoteByIdAsyncTask(VocaNoteDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected VocaNote doInBackground(Integer... params) {
+            return mAsyncTaskDao.getByIdVocaNote(params[0]);
         }
     }
 }

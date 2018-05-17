@@ -16,10 +16,13 @@ import android.view.View;
 import com.hfad.vocanoteapp.R;
 import com.hfad.vocanoteapp.Utilities;
 import com.hfad.vocanoteapp.adapters.VocaNotePagerAdapter;
+import com.hfad.vocanoteapp.database.VocaNote;
 import com.hfad.vocanoteapp.dialogs.DeleteAlertDialog;
+import com.hfad.vocanoteapp.ui.CreateNewVocaNoteActivity;
 import com.hfad.vocanoteapp.ui.wordsActivityController.WordsActivity;
 import com.hfad.vocanoteapp.viewModel.VocaNoteViewModel;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class VocaNoteActivity extends AppCompatActivity implements
@@ -28,6 +31,9 @@ public class VocaNoteActivity extends AppCompatActivity implements
     public static final String CURRENT_POSITION = "currentPosition";
     public static final String DELETE_VOCANOTE_DIALOG = "deleteVocaNoteDialog";
     public static final String ID = "id";
+    public static final int EDIT_VOCANOTE = 3;
+    public static final String ORIGIN_WORD = "origWord";
+    public static final String TRANSLATION = "translation";
     private String nameGroup;
     private String language;
     private int position;
@@ -36,6 +42,7 @@ public class VocaNoteActivity extends AppCompatActivity implements
     private ViewPager mPager;
     private VocaNoteViewModel mVocaNoteViewModel;
     private DeleteAlertDialog mDeleteAlertDialog;
+    private ArrayList<VocaNote> listVocaNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +55,14 @@ public class VocaNoteActivity extends AppCompatActivity implements
         mVocaNoteViewModel = ViewModelProviders.of(this).get(VocaNoteViewModel.class);
         mVocaNoteViewModel.getByGroupVcVocaNote(nameGroup)
                 .observe(this, vocaNotes -> {
-                    mAdapter.setCountVocaNotes(vocaNotes.size());
-                    mPager.setAdapter(mAdapter);
-                    mPager.setCurrentItem(position, false);
+                    //finish the Activity after removing of all VocaNotes from the group
                     if (vocaNotes.isEmpty()) {
                         finish();
                     }
+                    listVocaNote = (ArrayList<VocaNote>) vocaNotes;
+                    mAdapter.setCountVocaNotes(vocaNotes.size());
+                    mPager.setAdapter(mAdapter);
+                    mPager.setCurrentItem(position, false);
                 });
         initToolbar();
         initViewPager();
@@ -80,6 +89,18 @@ public class VocaNoteActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        if (data != null && requestCode == EDIT_VOCANOTE) {
+            if (resultCode == RESULT_OK) {
+                vocaNoteId = listVocaNote.get(position).getId();
+                String origWord = data.getStringExtra(CreateNewVocaNoteActivity.ORIG_WORD);
+                String translation = data.getStringExtra(CreateNewVocaNoteActivity.TRANSLATION);
+                mVocaNoteViewModel.editVocaNote(vocaNoteId, origWord, translation);
+            }
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(CURRENT_POSITION, mPager.getCurrentItem());
@@ -97,6 +118,7 @@ public class VocaNoteActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_edit:
+                sendDataToEditVocaNote();
                 return true;
             case R.id.action_delete:
                 showDeleteDialog();
@@ -106,9 +128,13 @@ public class VocaNoteActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onDeleteDialogPositiveClick(DialogFragment dialog) {
-        mVocaNoteViewModel.deleteVocaNoteById(vocaNoteId);
+    private void sendDataToEditVocaNote() {
+        position = mPager.getCurrentItem();
+        VocaNote selectedVocaNote = listVocaNote.get(position);
+        Intent intent = new Intent(this, CreateNewVocaNoteActivity.class);
+        intent.putExtra(ORIGIN_WORD, selectedVocaNote.getOriginWord());
+        intent.putExtra(TRANSLATION, selectedVocaNote.getTranslation());
+        startActivityForResult(intent, EDIT_VOCANOTE);
     }
 
     private void showDeleteDialog() {
@@ -119,6 +145,11 @@ public class VocaNoteActivity extends AppCompatActivity implements
                     position = mPager.getCurrentItem();
                     vocaNoteId = vocaNotes.get(position).getId();
                 });
+    }
+
+    @Override
+    public void onDeleteDialogPositiveClick(DialogFragment dialog) {
+        mVocaNoteViewModel.deleteVocaNoteById(vocaNoteId);
     }
 
     @Override

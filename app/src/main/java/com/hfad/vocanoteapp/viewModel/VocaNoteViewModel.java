@@ -13,7 +13,6 @@ import java.util.List;
 public class VocaNoteViewModel extends AndroidViewModel {
 
     private LiveData<List<VocaNote>> mAllWordsFrGroup;
-    private List<VocaNote> query;
     private WordRepository mRepository;
 
     public VocaNoteViewModel(@NonNull Application application) {
@@ -35,7 +34,15 @@ public class VocaNoteViewModel extends AndroidViewModel {
     }
 
     public List<VocaNote> searchVocaNoteByQuery(String nameGroup, String textQuery) {
-        query = mRepository.searchVocaNoteByQuery(nameGroup, textQuery);
+        List<VocaNote> query = mRepository.searchVocaNoteByQuery(nameGroup, textQuery);
         return query;
+    }
+
+    public VocaNote getVocaNoteById(int id){
+        return mRepository.getVocaNoteById(id);
+    }
+
+    public void editVocaNote(int id, String origWord, String translation){
+        mRepository.editVocaNote(id, origWord, translation);
     }
 }
