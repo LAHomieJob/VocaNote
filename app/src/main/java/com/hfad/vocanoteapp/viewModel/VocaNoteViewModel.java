@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+
 import com.hfad.vocanoteapp.database.VocaNote;
 import com.hfad.vocanoteapp.repository.WordRepository;
 
@@ -28,14 +29,21 @@ public class VocaNoteViewModel extends AndroidViewModel {
         mRepository.deleteByIdVocaNote(id);
     }
 
+    public void transferVocaNoteToStudiedById(int id) {
+        mRepository.transferVocaNoteToStudiedById(id);
+    }
+
+    public void removeVocaNoteToStudiedById(int id) {
+        mRepository.removeVocaNoteToStudiedById(id);
+    }
+
     public LiveData<List<VocaNote>> getByGroupVcVocaNote(String nameGroup) {
         mAllWordsFrGroup = mRepository.getByGroupVcVocaNote(nameGroup);
         return mAllWordsFrGroup;
     }
 
     public List<VocaNote> searchVocaNoteByQuery(String nameGroup, String textQuery) {
-        List<VocaNote> query = mRepository.searchVocaNoteByQuery(nameGroup, textQuery);
-        return query;
+        return mRepository.searchVocaNoteByQuery(nameGroup, textQuery);
     }
 
     public VocaNote getVocaNoteById(int id){

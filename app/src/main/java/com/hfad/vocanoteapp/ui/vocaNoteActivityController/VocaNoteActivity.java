@@ -41,6 +41,7 @@ public class VocaNoteActivity extends AppCompatActivity implements
     private int vocaNoteId;
     private VocaNotePagerAdapter mAdapter;
     private ViewPager mPager;
+    private Toast toast;
     private VocaNoteViewModel mVocaNoteViewModel;
     private DeleteAlertDialog mDeleteAlertDialog;
     private ArrayList<VocaNote> listVocaNote;
@@ -159,6 +160,23 @@ public class VocaNoteActivity extends AppCompatActivity implements
     @Override
     public void onRightArrowIconClick() {
         mPager.arrowScroll(View.FOCUS_RIGHT);
+    }
+
+    @Override
+    public void changeStudiedMark() {
+        vocaNoteId = listVocaNote.get(position).getId();
+        int studiedMark = listVocaNote.get(position).getStudied();
+        if (studiedMark == 0) {
+            mVocaNoteViewModel.transferVocaNoteToStudiedById(vocaNoteId);
+            toast = Utilities.initializeToast
+                    (this, toast, getString(R.string.vocanote_was_moved_into_studied));
+            toast.show();
+        } else {
+            mVocaNoteViewModel.removeVocaNoteToStudiedById(vocaNoteId);
+            toast = Utilities.initializeToast
+                    (this, toast, getString(R.string.vocanote_was_removed_from_studied));
+            toast.show();
+        }
     }
 }
 

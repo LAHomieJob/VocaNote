@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.hfad.vocanoteapp.R;
@@ -57,8 +58,9 @@ public class VocaNoteContainerFragment extends Fragment {
 
     public interface VocaNoteFragmentListener {
         void onLeftArrowIconClick();
-
         void onRightArrowIconClick();
+
+        void changeStudiedMark();
     }
 
     public static class VocaNoteDetailFragment extends Fragment {
@@ -74,6 +76,8 @@ public class VocaNoteContainerFragment extends Fragment {
         private boolean flip;
         private VocaNoteViewModel innerVocaNoteViewModel;
         private TextView wordView;
+        private Button btnStudied;
+        private int studiedMark;
 
         public VocaNoteDetailFragment() {
 
@@ -114,9 +118,11 @@ public class VocaNoteContainerFragment extends Fragment {
                                  Bundle savedInstanceState) {
             View detailView = inflater.inflate(R.layout.fragment_voca_note, container, false);
             wordView = detailView.findViewById(R.id.word);
+            btnStudied = detailView.findViewById(R.id.button_studied);
             detailView.findViewById(R.id.rotateCard).setOnClickListener(v1 -> flipCard());
             detailView.findViewById(R.id.skipLeft).setOnClickListener(v1 -> mListener.onLeftArrowIconClick());
             detailView.findViewById(R.id.skipRight).setOnClickListener(v1 -> mListener.onRightArrowIconClick());
+            btnStudied.setOnClickListener(v1 -> mListener.changeStudiedMark());
             return detailView;
         }
 
@@ -127,10 +133,16 @@ public class VocaNoteContainerFragment extends Fragment {
                     .observe(this, vocaNotes -> {
                         origWord = vocaNotes.get(position).getOriginWord();
                         translation = vocaNotes.get(position).getTranslation();
+                        studiedMark = vocaNotes.get(position).getStudied();
                         if (flip) {
                             wordView.setText(translation);
                         } else {
                             wordView.setText(origWord);
+                        }
+                        if (studiedMark == 0) {
+                            btnStudied.setText(R.string.transfer_into_studied);
+                        } else {
+                            btnStudied.setText(R.string.remove_from_studied);
                         }
                     });
         }

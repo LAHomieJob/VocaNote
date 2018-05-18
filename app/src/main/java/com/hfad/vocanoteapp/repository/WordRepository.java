@@ -5,8 +5,6 @@ import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import com.hfad.vocanoteapp.database.AppDatabase;
-import com.hfad.vocanoteapp.database.GroupVc;
-import com.hfad.vocanoteapp.database.GroupVcDao;
 import com.hfad.vocanoteapp.database.VocaNote;
 import com.hfad.vocanoteapp.database.VocaNoteDao;
 
@@ -53,6 +51,14 @@ public class WordRepository {
     public void editVocaNote(int vocaNoteId, String origWord, String translation){
         EditTaskParams params = new EditTaskParams(vocaNoteId, origWord, translation);
         new editVocaNoteAsyncTask(mVocaNoteDao).execute(params);
+    }
+
+    public void transferVocaNoteToStudiedById(int id) {
+        new transferVocaNoteToStudiedAsyncTaskById(mVocaNoteDao).execute(id);
+    }
+
+    public void removeVocaNoteToStudiedById(int id) {
+        new removeVocaNoteFromStudiedAsyncTaskById(mVocaNoteDao).execute(id);
     }
 
     public void deleteByIdVocaNote(int id) {
@@ -115,6 +121,36 @@ public class WordRepository {
         @Override
         protected Void doInBackground(Integer... params) {
             mAsyncTaskDao.deleteByIdVocaNote(params[0]);
+            return null;
+        }
+    }
+
+    private static class transferVocaNoteToStudiedAsyncTaskById extends AsyncTask<Integer, Void, Void> {
+
+        private VocaNoteDao mAsyncTaskDao;
+
+        transferVocaNoteToStudiedAsyncTaskById(VocaNoteDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            mAsyncTaskDao.transferVocaNoteToStudiedById(params[0]);
+            return null;
+        }
+    }
+
+    private static class removeVocaNoteFromStudiedAsyncTaskById extends AsyncTask<Integer, Void, Void> {
+
+        private VocaNoteDao mAsyncTaskDao;
+
+        removeVocaNoteFromStudiedAsyncTaskById(VocaNoteDao dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            mAsyncTaskDao.removeVocaNoteFromStudiedById(params[0]);
             return null;
         }
     }

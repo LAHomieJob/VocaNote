@@ -38,4 +38,8 @@
     <string name="save_vocanote">Save VocaNote</string>
     <string name="vocanote_was_deleted">VocaNote was deleted</string>
     <string name="vocanote_was_edited">VocaNote was edited</string>
+    <string name="transfer_into_studied">Transfer into Studied</string>
+    <string name="remove_from_studied">Remove from Studied</string>
+    <string name="vocanote_was_moved_into_studied">VocaNote was moved into Studied</string>
+    <string name="vocanote_was_removed_from_studied">VocaNote was removed from Studied</string>
 </resources>
