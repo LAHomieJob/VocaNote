@@ -36,4 +36,6 @@
     <string name="group_already_exists">Group %1$s already exists</string>
     <string name="the_name_of_group">The name of group</string>
     <string name="save_vocanote">Save VocaNote</string>
+    <string name="vocanote_was_deleted">VocaNote was deleted</string>
+    <string name="vocanote_was_edited">VocaNote was edited</string>
 </resources>

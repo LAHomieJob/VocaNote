@@ -7,13 +7,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.hfad.vocanoteapp.R;
+import com.hfad.vocanoteapp.Utilities;
 import com.hfad.vocanoteapp.ui.vocaNoteActivityController.VocaNoteActivity;
 
 public class CreateNewVocaNoteActivity extends AppCompatActivity implements View.OnClickListener {
@@ -23,6 +23,7 @@ public class CreateNewVocaNoteActivity extends AppCompatActivity implements View
     EditText mEditTextTraslation;
     private Toolbar myToolbar;
     private Button newVocaNote;
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +50,9 @@ public class CreateNewVocaNoteActivity extends AppCompatActivity implements View
     }
 
     /*This method is invoked from
-    * VocaNoteActivty to edit selected VocaNote*/
-    private void retrieveDatatoEditVocaNote(){
-        if (getIntent().getExtras() != null){
+     * VocaNoteActivty to edit selected VocaNote*/
+    private void retrieveDatatoEditVocaNote() {
+        if (getIntent().getExtras() != null) {
             Intent intent = getIntent();
             mEditTextOrigWord.setText(intent.getStringExtra(VocaNoteActivity.ORIGIN_WORD));
             mEditTextTraslation.setText(intent.getStringExtra(VocaNoteActivity.TRANSLATION));
@@ -64,8 +65,8 @@ public class CreateNewVocaNoteActivity extends AppCompatActivity implements View
     public void onClick(View v) {
         if (TextUtils.isEmpty(mEditTextOrigWord.getText()) ||
                 TextUtils.isEmpty(mEditTextTraslation.getText())) {
-            Toast.makeText(this, getString(R.string.field_is_empty), Toast.LENGTH_SHORT)
-                    .show();
+            toast = Utilities.initializeToast(this, toast, getString(R.string.field_is_empty));
+            toast.show();
         } else {
             String origWord = mEditTextOrigWord.getText().toString();
             String translation = mEditTextTraslation.getText().toString();

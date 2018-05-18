@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.hfad.vocanoteapp.R;
 import com.hfad.vocanoteapp.Utilities;
@@ -96,6 +97,7 @@ public class VocaNoteActivity extends AppCompatActivity implements
                 String origWord = data.getStringExtra(CreateNewVocaNoteActivity.ORIG_WORD);
                 String translation = data.getStringExtra(CreateNewVocaNoteActivity.TRANSLATION);
                 mVocaNoteViewModel.editVocaNote(vocaNoteId, origWord, translation);
+                Toast.makeText(this, getString(R.string.vocanote_was_edited), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -116,6 +118,7 @@ public class VocaNoteActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        position = mPager.getCurrentItem();
         switch (item.getItemId()) {
             case R.id.action_edit:
                 sendDataToEditVocaNote();
@@ -129,7 +132,6 @@ public class VocaNoteActivity extends AppCompatActivity implements
     }
 
     private void sendDataToEditVocaNote() {
-        position = mPager.getCurrentItem();
         VocaNote selectedVocaNote = listVocaNote.get(position);
         Intent intent = new Intent(this, CreateNewVocaNoteActivity.class);
         intent.putExtra(ORIGIN_WORD, selectedVocaNote.getOriginWord());
@@ -140,16 +142,13 @@ public class VocaNoteActivity extends AppCompatActivity implements
     private void showDeleteDialog() {
         mDeleteAlertDialog = new DeleteAlertDialog().newInstance(getString(R.string.delete_vocanote_alert_dialog));
         mDeleteAlertDialog.show(getSupportFragmentManager(), DELETE_VOCANOTE_DIALOG);
-        mVocaNoteViewModel.getByGroupVcVocaNote(nameGroup)
-                .observe(mDeleteAlertDialog, vocaNotes -> {
-                    position = mPager.getCurrentItem();
-                    vocaNoteId = vocaNotes.get(position).getId();
-                });
     }
 
     @Override
     public void onDeleteDialogPositiveClick(DialogFragment dialog) {
+        vocaNoteId = listVocaNote.get(position).getId();
         mVocaNoteViewModel.deleteVocaNoteById(vocaNoteId);
+        Toast.makeText(this, getString(R.string.vocanote_was_deleted), Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.hfad.vocanoteapp.R;
+import com.hfad.vocanoteapp.Utilities;
 import com.hfad.vocanoteapp.database.GroupVc;
 import com.hfad.vocanoteapp.viewModel.GroupsViewModel;
 
@@ -33,16 +34,19 @@ public class AddGroupActivity extends AppCompatActivity {
         final Button button = findViewById(R.id.add_group_button);
         button.setOnClickListener(view -> {
             if (TextUtils.isEmpty(mEditWordView.getText())) {
-                initToast((getResources().getString(R.string.empty_group)));
+                toast = Utilities.initializeToast(this, toast, getResources().getString(R.string.empty_group));
+                toast.show();
             } else {
                 String groupName = mEditWordView.getText().toString();
                 String language = spinner.getSelectedItem().toString();
                 if (mGroupsViewModel.getGroupByName(groupName) == null) {
                     GroupVc newGroupVc = new GroupVc(language, groupName);
                     mGroupsViewModel.insert(newGroupVc);
-                    initToast(getString(R.string.group_was_added, groupName));
+                    toast = Utilities.initializeToast(this, toast, getString(R.string.group_was_added, groupName));
+                    toast.show();
                 } else {
-                    initToast(getString(R.string.group_already_exists, groupName));
+                    toast = Utilities.initializeToast(this, toast, getString(R.string.group_already_exists, groupName));
+                    toast.show();
                 }
             }
         });
@@ -55,21 +59,9 @@ public class AddGroupActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
-    private void cancelToast() {
-        if (toast != null) {
-            toast.cancel();
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        cancelToast();
-    }
-
-    private void initToast(String res) {
-        cancelToast();
-        toast = Toast.makeText(AddGroupActivity.this, res, Toast.LENGTH_SHORT);
-        toast.show();
+        Utilities.cancelToast(toast);
     }
 }
