@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -41,7 +40,6 @@ public class GroupsActivity extends AppCompatActivity implements
     private static final String TAG = "CANCEL";
     private static final String NAME_GROUP = "Name group";
     private static final String SEARCH_QUERY = "Search query";
-    private RecyclerView mRecyclerView;
     private GroupsVcAdapter adapter;
     private GroupsViewModel mGroupsViewModel;
     private String nameGroup;
@@ -62,9 +60,7 @@ public class GroupsActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_groups);
         Toolbar myToolbar = findViewById(R.id.toolbar_groups);
         setSupportActionBar(myToolbar);
-        ActionBar ab = getSupportActionBar();
-        Objects.requireNonNull(ab).setDisplayHomeAsUpEnabled(true);
-        mRecyclerView = initRecyclerView();
+        initRecyclerView();
         mGroupsViewModel = ViewModelProviders.of(this).get(GroupsViewModel.class);
         mGroupsViewModel.getAllGroups()
                 .observe(this, groupVcs -> adapter.setGroupsVc(groupVcs));
