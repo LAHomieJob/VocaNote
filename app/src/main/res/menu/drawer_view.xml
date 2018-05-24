@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="@string/training">
+        <menu>
+            <item
+                android:id="@+id/find_par"
+                android:icon="@drawable/baseline_compare_arrows_black_24"
+                android:title="@string/find_a_par" />
+            <item
+                android:id="@+id/trabslate_it"
+                android:icon="@drawable/baseline_translate_black_24"
+                android:title="@string/translate_it" />
+        </menu>
+    </item>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/studied_vocanotes"
+            android:icon="@drawable/baseline_done_all_black_24"
+            android:title="@string/studied_vocanotes" />
+    </group>
+
+    <item android:title="@string/communication_and_info">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/baseline_share_black_24"
+                android:title="@string/share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/baseline_send_black_24"
+                android:title="@string/write_to_us" />
+            <item
+                android:id="@+id/instructions"
+                android:icon="@drawable/baseline_error_outline_black_24"
+                android:title="@string/instructions" />
+        </menu>
+    </item>
+</menu>

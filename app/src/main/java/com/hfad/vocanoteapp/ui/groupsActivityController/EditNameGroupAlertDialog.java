@@ -10,13 +10,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.hfad.vocanoteapp.R;
 
 public class EditNameGroupAlertDialog extends DialogFragment implements LifecycleObserver {
-
+    private static final String TAG = "CANCEL";
     EditNameListener mListener;
 
     @Override
@@ -53,7 +54,10 @@ public class EditNameGroupAlertDialog extends DialogFragment implements Lifecycl
     public interface EditNameListener {
         void onEditDialogPositiveClick(DialogFragment dialog);
 
-        void onEditDialogNegativeClick(DialogFragment dialog);
+        default void onEditDialogNegativeClick(DialogFragment dialog) {
+            Log.i(TAG, "Cancel button in EditName dialog.");
+            dialog.dismiss();
+        }
     }
 
 }

@@ -42,4 +42,12 @@
     <string name="remove_from_studied">Remove from Studied</string>
     <string name="vocanote_was_moved_into_studied">VocaNote was moved into Studied</string>
     <string name="vocanote_was_removed_from_studied">VocaNote was removed from Studied</string>
+    <string name="find_a_par">Find a par</string>
+    <string name="training">Training</string>
+    <string name="translate_it">Translate it!</string>
+    <string name="communication_and_info">Communication and info</string>
+    <string name="studied_vocanotes">Studied VocaNotes</string>
+    <string name="share">Share</string>
+    <string name="write_to_us">Write to us</string>
+    <string name="instructions">Instructions</string>
 </resources>
