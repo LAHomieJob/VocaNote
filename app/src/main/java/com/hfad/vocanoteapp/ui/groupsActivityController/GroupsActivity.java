@@ -4,6 +4,8 @@ import android.app.SearchManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -24,10 +26,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.hfad.vocanoteapp.BuildConfig;
 import com.hfad.vocanoteapp.R;
 import com.hfad.vocanoteapp.adapters.GroupsVcAdapter;
 import com.hfad.vocanoteapp.adapters.OnItemClicked;
 import com.hfad.vocanoteapp.dialogs.DeleteAlertDialog;
+import com.hfad.vocanoteapp.ui.InstructionsActivity;
 import com.hfad.vocanoteapp.ui.wordsActivityController.WordsActivity;
 import com.hfad.vocanoteapp.viewModel.GroupsViewModel;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
@@ -69,12 +73,55 @@ public class GroupsActivity extends AppCompatActivity implements
         mGroupsViewModel = ViewModelProviders.of(this).get(GroupsViewModel.class);
         mGroupsViewModel.getAllGroups()
                 .observe(this, groupVcs -> adapter.setGroupsVc(groupVcs));
+        initNavigationDrawer();
+    }
+
+    private void initNavigationDrawer() {
         mDrawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.nav_share:
+                    createShareMessage();
+                    break;
+                case R.id.nav_send:
+                    createFeedbackMessage();
+                    break;
+                case R.id.instructions:
+                    startActivity(new Intent(this, InstructionsActivity.class));
+                    break;
+            }
             mDrawerLayout.closeDrawers();
             return true;
         });
+    }
+
+    private void createFeedbackMessage() {
+        String appIdName = BuildConfig.APPLICATION_ID;
+        String versionCode = Build.VERSION.RELEASE;
+        int sdkVersion = Build.VERSION.SDK_INT;
+        String deviceModel = Build.MODEL;
+        String language = getResources().getConfiguration().locale.getLanguage();
+        String appFeedback = getString(R.string.aap_feedback_info, appIdName,
+                versionCode, sdkVersion, deviceModel, language);
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse(getString(R.string.mailto)));
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, appFeedback);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.VocaNote_application_feedback));
+        if (emailIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(Intent.createChooser(emailIntent, getString(R.string.send_feedback)));
+        }
+    }
+
+    private void createShareMessage() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra
+                (Intent.EXTRA_TEXT, getResources().getString(R.string.share_message));
+        shareIntent.setType("text/plain");
+        if (shareIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(shareIntent);
+        }
     }
 
     private void initToolbar() {

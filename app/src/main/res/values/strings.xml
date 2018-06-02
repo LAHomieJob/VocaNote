@@ -50,4 +50,19 @@
     <string name="share">Share</string>
     <string name="write_to_us">Write to us</string>
     <string name="instructions">Instructions</string>
+    <!--Change the address of application on Google's Playmarket-->
+    <string name="share_message">Do you want to learn new language? - With our application
+    it is so simple! github.com/LAHomieJob/VocaNote</string>
+    <string name="aap_feedback_info">
+        App Name: %1$s %nApp Version: %2$s %nOS Name: Android %nOS Version: %3$d %nDevice: %4$s %nLanguage: %5$s %n%nFeedback:%n
+    </string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="VocaNote_application_feedback">VocaNote application feedback</string>
+    <string name="mailto">mailto: aleksey.fedorovjob@mail.ru</string>
+    <!--Change instruction-->
+    <string name="instructions_detail">
+        <b>Welcome to VocaNote!</b>\n\nVocaNote is my first Android pet-project. The practical value
+        of this app is to help people to learn foreign languages. With this app you can write
+        new words into multiple custom vocabularies(Groups) and then through couple built-in games practice
+        and memorize them.</string>
 </resources>

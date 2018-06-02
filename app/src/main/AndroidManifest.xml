@@ -34,6 +34,10 @@
             android:name=".ui.vocaNoteActivityController.VocaNoteActivity"
             android:label="@string/vocanotes"
             android:parentActivityName=".ui.wordsActivityController.WordsActivity" />
+        <activity
+            android:name=".ui.InstructionsActivity"
+            android:label="@string/instructions"
+            android:parentActivityName=".ui.InstructionsActivity"></activity>
     </application>
 
 </manifest>
