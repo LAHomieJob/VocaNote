@@ -9,12 +9,15 @@ import com.hfad.vocanoteapp.ui.vocaNoteActivityController.VocaNoteContainerFragm
 
 public class VocaNotePagerAdapter extends FragmentStatePagerAdapter {
     private String nameGroup;
+    private String language;
     private int countVocaNotes;
 
-    public VocaNotePagerAdapter(FragmentManager fm, String nameGroup) {
+    public VocaNotePagerAdapter(final FragmentManager fm, String nameGroup, String language) {
         super(fm);
         this.nameGroup = nameGroup;
+        this.language = language;
     }
+
 
     public void setCountVocaNotes(int countVocaNotes) {
         this.countVocaNotes = countVocaNotes;
@@ -30,6 +33,6 @@ public class VocaNotePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return new VocaNoteContainerFragment().newInstance(position, nameGroup);
+        return new VocaNoteContainerFragment().newInstance(position, nameGroup, language);
     }
 }

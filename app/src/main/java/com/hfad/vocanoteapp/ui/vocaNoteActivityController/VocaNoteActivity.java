@@ -23,6 +23,8 @@ import com.hfad.vocanoteapp.ui.CreateNewVocaNoteActivity;
 import com.hfad.vocanoteapp.ui.wordsActivityController.WordsActivity;
 import com.hfad.vocanoteapp.viewModel.VocaNoteViewModel;
 
+import net.gotev.speech.Speech;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -45,6 +47,10 @@ public class VocaNoteActivity extends AppCompatActivity implements
     private VocaNoteViewModel mVocaNoteViewModel;
     private DeleteAlertDialog mDeleteAlertDialog;
     private ArrayList<VocaNote> listVocaNote;
+
+    private void setPosition(final int position) {
+        this.position = position;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +91,25 @@ public class VocaNoteActivity extends AppCompatActivity implements
     }
 
     protected void initViewPager() {
-        mAdapter = new VocaNotePagerAdapter(getSupportFragmentManager(), nameGroup);
+        mAdapter = new VocaNotePagerAdapter(getSupportFragmentManager(), nameGroup, language);
         mPager = findViewById(R.id.pager);
         mPager.setPageMargin(Utilities.convertDip2Pixels(this, 16));
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(final int position) {
+                setPosition(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(final int state) {
+
+            }
+        });
     }
 
     @Override

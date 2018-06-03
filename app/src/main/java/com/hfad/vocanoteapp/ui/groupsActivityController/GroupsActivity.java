@@ -36,6 +36,8 @@ import com.hfad.vocanoteapp.ui.wordsActivityController.WordsActivity;
 import com.hfad.vocanoteapp.viewModel.GroupsViewModel;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
+import net.gotev.speech.Speech;
+
 import java.util.Objects;
 
 public class GroupsActivity extends AppCompatActivity implements
@@ -62,7 +64,8 @@ public class GroupsActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Restore value of members from saved state
+        //The initialization of Text-to-speech module
+        Speech.init(getApplicationContext(), getPackageName());
         if (savedInstanceState != null) {
             nameGroup = savedInstanceState.getString(NAME_GROUP);
             searchQuery = savedInstanceState.getString(SEARCH_QUERY);

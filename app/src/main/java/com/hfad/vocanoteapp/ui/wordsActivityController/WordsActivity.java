@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.speech.tts.TextToSpeech;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,7 +21,7 @@ import android.view.ViewTreeObserver;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.hfad.vocanoteapp.R;
-import com.hfad.vocanoteapp.Speaker;
+import com.hfad.vocanoteapp.Utilities;
 import com.hfad.vocanoteapp.adapters.OnItemClicked;
 import com.hfad.vocanoteapp.adapters.WordsAdapter;
 import com.hfad.vocanoteapp.database.VocaNote;
@@ -33,6 +30,8 @@ import com.hfad.vocanoteapp.ui.CreateNewVocaNoteActivity;
 import com.hfad.vocanoteapp.ui.groupsActivityController.GroupsActivity;
 import com.hfad.vocanoteapp.ui.vocaNoteActivityController.VocaNoteActivity;
 import com.hfad.vocanoteapp.viewModel.VocaNoteViewModel;
+
+import net.gotev.speech.Speech;
 
 import java.util.Locale;
 
@@ -45,7 +44,6 @@ public class WordsActivity extends AppCompatActivity {
     public static final String LANGUAGE = "Language";
     public static final String KEY_FOR_LAYOUT_MANAGER_STATE = "KeyForLayoutManagerState";
     private static final String SEARCH_QUERY = "Search query";
-    private ArrayMap<String, Locale> availableLangs;
     private WordsAdapter adapter;
     private RecyclerView mRecyclerView;
     private VocaNoteViewModel mVocaNoteViewModel;
@@ -57,8 +55,6 @@ public class WordsActivity extends AppCompatActivity {
     private SearchView searchView;
     private String searchQuery;
     private MenuItem mActionSearchMenuItem;
-
-    private Speaker origSpeaker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +69,10 @@ public class WordsActivity extends AppCompatActivity {
             searchQuery = savedInstanceState.getString(SEARCH_QUERY);
             listState = savedInstanceState.getParcelable(KEY_FOR_LAYOUT_MANAGER_STATE);
         }
+        Locale locale = Utilities.chooseLang(this, language);
+        Speech.getInstance().setLocale(locale);
         mRecyclerView = initRecyclerView();
         initFabMenuListeners();
-        checkTTS();
         mVocaNoteViewModel = ViewModelProviders.of(this).get(VocaNoteViewModel.class);
         mVocaNoteViewModel.getByGroupVcVocaNote(nameGroup)
                 .observe(this, vocaNotes -> adapter.setVocaNotes(vocaNotes));
@@ -97,7 +94,7 @@ public class WordsActivity extends AppCompatActivity {
             translation = adapter.getFilteredVocaNotes().get(position).getTranslation();
             switch (v.getId()) {
                 case R.id.word_sound:
-                    origSpeaker.speak(origWord);
+                    Speech.getInstance().say(origWord);
                     break;
                 default:
                     Intent intent = new Intent(this, VocaNoteActivity.class);
@@ -133,13 +130,6 @@ public class WordsActivity extends AppCompatActivity {
         });
     }
 
-    private void checkTTS() {
-        Log.d("Check_TTS", "I'm checking TTS");
-        Intent check = new Intent();
-        check.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(check, CHECK_CODE);
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(KEY_FOR_LAYOUT_MANAGER_STATE,
@@ -161,20 +151,6 @@ public class WordsActivity extends AppCompatActivity {
                     mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
             });
-        }
-        if (requestCode == CHECK_CODE) {
-            if (origSpeaker == null) {
-                if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                    Log.d("INIT_TTS", "I'm initializing TTS");
-                    origSpeaker = new Speaker(getApplicationContext(), chooseLang(language));
-
-                } else {
-                    Intent install = new Intent();
-                    Log.d("INIT_TTS", "Alternative TTS");
-                    install.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
-                    startActivity(install);
-                }
-            }
         }
     }
 
@@ -212,24 +188,6 @@ public class WordsActivity extends AppCompatActivity {
             }
         });
         return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (origSpeaker != null) {
-            origSpeaker.destroy();
-        }
-    }
-
-    private Locale chooseLang(String language) {
-        availableLangs = new ArrayMap<>();
-        availableLangs.put(getResources().getStringArray(R.array.spinner_values)[0], Locale.UK);
-        availableLangs.put(getResources().getStringArray(R.array.spinner_values)[1], new Locale("spa", "ESP"));
-        availableLangs.put(getResources().getStringArray(R.array.spinner_values)[2], Locale.ITALY);
-        availableLangs.put(getResources().getStringArray(R.array.spinner_values)[3], Locale.FRANCE);
-        availableLangs.put(getResources().getStringArray(R.array.spinner_values)[4], Locale.GERMANY);
-        return availableLangs.get(language);
     }
 }
 
